@@ -1,0 +1,503 @@
+table _Measures
+	lineageTag: f0f63975-c52b-5d23-9116-714f50c0c730
+
+	measure 'Snapshot Date' = MAX(Parameters[SnapshotDate])
+		formatString: mmm d, yyyy
+		displayFolder: Base
+		lineageTag: ebb164af-4fd6-506d-99b0-c84753d17682
+
+	measure Amount = SUM(FactLedger[Amount])
+		formatString: "R$" #,0
+		displayFolder: Base
+		lineageTag: e892974c-3275-5cf8-9624-f42372ba2dda
+
+	measure 'Gross Revenue' = CALCULATE([Amount], DimAccount[Group] = "Gross Revenue")
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: f228dfae-0680-57d4-941a-7312d8a5200e
+
+	measure Deductions = CALCULATE([Amount], DimAccount[Group] = "Deductions")
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: 6c6dc5e9-a73a-5721-839c-ab72a2fa044b
+
+	measure 'Net Revenue' = [Gross Revenue] + [Deductions]
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: 75533395-2ddd-58b8-a1d0-c433cd9801e6
+
+	measure COGS = CALCULATE([Amount], DimAccount[Group] = "COGS")
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: 95ba7c12-a262-50f8-84d5-7cb4263f2dab
+
+	measure 'Gross Profit' = [Net Revenue] + [COGS]
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: e883b178-df26-5e57-9759-5f494276c439
+
+	measure 'Gross Margin %' = DIVIDE([Gross Profit], [Net Revenue])
+		formatString: 0.0%
+		displayFolder: P&L
+		lineageTag: 610f600a-149f-5bbd-b3dd-2707619338b1
+
+	measure 'Operating Expenses' = CALCULATE([Amount], DimAccount[Group] IN {"Personnel", "Occupancy", "Sales and Marketing", "General and Administrative"})
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: 09684490-1432-56df-ba5c-a719988c0cd8
+
+	measure 'Operating Expenses (positive)' = -[Operating Expenses]
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: 0dd5f301-edb3-5956-b5a9-67c31ef1ebd6
+
+	measure EBITDA = [Gross Profit] + [Operating Expenses]
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: 035735ab-69e0-53a3-9ed2-15afd31d33ce
+
+	measure 'EBITDA Margin %' = DIVIDE([EBITDA], [Net Revenue])
+		formatString: 0.0%
+		displayFolder: P&L
+		lineageTag: 37a01a28-42a3-550b-b0f7-e90cee8ceb6c
+
+	measure 'Financial Result' = CALCULATE([Amount], DimAccount[Group] = "Financial Result")
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: 6f83292e-d348-5fa1-9af8-fed5bab83a80
+
+	measure 'Net Income' = [EBITDA] + [Financial Result]
+		formatString: "R$" #,0
+		displayFolder: P&L
+		lineageTag: 9351dd44-caf0-5da2-9859-304bf4281461
+
+	measure 'Net Margin %' = DIVIDE([Net Income], [Net Revenue])
+		formatString: 0.0%
+		displayFolder: P&L
+		lineageTag: 4c52c125-c7a4-5f43-8299-cbc676d9e60c
+
+	measure 'P&L Amount' =
+			VAR o = SELECTEDVALUE(DimPnLLine[LineOrder])
+			RETURN SWITCH(o,
+			    1, CALCULATE([Amount], DimAccount[Group] IN {"Gross Revenue"}),
+			    2, CALCULATE([Amount], DimAccount[Group] IN {"Deductions"}),
+			    3, CALCULATE([Amount], DimAccount[Group] IN {"Gross Revenue", "Deductions"}),
+			    4, CALCULATE([Amount], DimAccount[Group] IN {"COGS"}),
+			    5, CALCULATE([Amount], DimAccount[Group] IN {"Gross Revenue", "Deductions", "COGS"}),
+			    6, CALCULATE([Amount], DimAccount[Group] IN {"Personnel"}),
+			    7, CALCULATE([Amount], DimAccount[Group] IN {"Occupancy"}),
+			    8, CALCULATE([Amount], DimAccount[Group] IN {"Sales and Marketing"}),
+			    9, CALCULATE([Amount], DimAccount[Group] IN {"General and Administrative"}),
+			    10, CALCULATE([Amount], DimAccount[Group] IN {"Gross Revenue", "Deductions", "COGS", "Personnel", "Occupancy", "Sales and Marketing", "General and Administrative"}),
+			    11, CALCULATE([Amount], DimAccount[Group] IN {"Financial Result"}),
+			    12, CALCULATE([Amount], DimAccount[Group] IN {"Gross Revenue", "Deductions", "COGS", "Personnel", "Occupancy", "Sales and Marketing", "General and Administrative", "Financial Result"})
+			)
+		formatString: #,0,;(#,0,);-
+		displayFolder: P&L
+		lineageTag: 0482a32e-0633-5e61-91f2-9fb7e77e770e
+
+	measure '% of Net Revenue' = DIVIDE([P&L Amount], [Net Revenue])
+		formatString: 0.0%
+		displayFolder: P&L
+		lineageTag: 24d0e94c-efb5-576c-ba1d-5c31ba49de33
+
+	measure Budget = SUM(FactBudget[Amount])
+		formatString: "R$" #,0
+		displayFolder: Budget
+		lineageTag: cf907793-04f2-56cb-9d71-2fb3d7c2aa4c
+
+	measure 'P&L Budget' =
+			VAR o = SELECTEDVALUE(DimPnLLine[LineOrder])
+			RETURN SWITCH(o,
+			    1, CALCULATE([Budget], DimAccount[Group] IN {"Gross Revenue"}),
+			    2, CALCULATE([Budget], DimAccount[Group] IN {"Deductions"}),
+			    3, CALCULATE([Budget], DimAccount[Group] IN {"Gross Revenue", "Deductions"}),
+			    4, CALCULATE([Budget], DimAccount[Group] IN {"COGS"}),
+			    5, CALCULATE([Budget], DimAccount[Group] IN {"Gross Revenue", "Deductions", "COGS"}),
+			    6, CALCULATE([Budget], DimAccount[Group] IN {"Personnel"}),
+			    7, CALCULATE([Budget], DimAccount[Group] IN {"Occupancy"}),
+			    8, CALCULATE([Budget], DimAccount[Group] IN {"Sales and Marketing"}),
+			    9, CALCULATE([Budget], DimAccount[Group] IN {"General and Administrative"}),
+			    10, CALCULATE([Budget], DimAccount[Group] IN {"Gross Revenue", "Deductions", "COGS", "Personnel", "Occupancy", "Sales and Marketing", "General and Administrative"}),
+			    11, CALCULATE([Budget], DimAccount[Group] IN {"Financial Result"}),
+			    12, CALCULATE([Budget], DimAccount[Group] IN {"Gross Revenue", "Deductions", "COGS", "Personnel", "Occupancy", "Sales and Marketing", "General and Administrative", "Financial Result"})
+			)
+		formatString: #,0,;(#,0,);-
+		displayFolder: Budget
+		lineageTag: d5a6b7fb-bfa7-5d15-b8f3-288be8bbd03d
+
+	measure 'Variance vs Budget' = [P&L Amount] - [P&L Budget]
+		formatString: #,0,;(#,0,);-
+		displayFolder: Budget
+		lineageTag: 44941773-98db-5ef9-a133-548d2ed72db3
+
+	measure 'Variance vs Budget %' = DIVIDE([Variance vs Budget], ABS([P&L Budget]))
+		formatString: 0.0%
+		displayFolder: Budget
+		lineageTag: 62b4d71c-8921-506a-9841-7aa701b425a8
+
+	measure 'Net Revenue Budget' = CALCULATE([Budget], DimAccount[Group] IN {"Gross Revenue", "Deductions"})
+		formatString: "R$" #,0
+		displayFolder: Budget
+		lineageTag: 912a241f-5883-5f57-ab34-aff9ab6a6636
+
+	measure 'Cash Inflows' =
+			VAR snap = [Snapshot Date]
+			RETURN CALCULATE(SUM(FactLedger[Amount]), USERELATIONSHIP(FactLedger[CashDate], DimDate[Date]),
+			    FactLedger[Amount] > 0, FactLedger[CashDate] <= snap)
+		formatString: "R$" #,0
+		displayFolder: Cash
+		lineageTag: 831d88a9-e581-5432-9cd0-2eb5e54e2eb7
+
+	measure 'Cash Outflows' =
+			VAR snap = [Snapshot Date]
+			RETURN CALCULATE(SUM(FactLedger[Amount]), USERELATIONSHIP(FactLedger[CashDate], DimDate[Date]),
+			    FactLedger[Amount] < 0, FactLedger[CashDate] <= snap)
+		formatString: "R$" #,0
+		displayFolder: Cash
+		lineageTag: 29d28dd1-e7b2-5534-bcb4-6210047a5e4b
+
+	measure 'Cash Outflows (positive)' = -[Cash Outflows]
+		formatString: "R$" #,0
+		displayFolder: Cash
+		lineageTag: 209d17b5-dc99-5468-a4c0-dab956c7c337
+
+	measure 'Net Cash Flow' = [Cash Inflows] + [Cash Outflows]
+		formatString: "R$" #,0
+		displayFolder: Cash
+		lineageTag: 0731c6ca-82c9-5914-b549-014a6a31eae6
+
+	measure 'Cash Balance' =
+			VAR snap = [Snapshot Date]
+			VAR periodStart = MIN(DimDate[Date])
+			VAR periodEnd = MIN(MAX(DimDate[Date]), snap)
+			RETURN IF(periodStart > snap, BLANK(),
+			    MAX(Parameters[OpeningCash]) + CALCULATE(SUM(FactLedger[Amount]), USERELATIONSHIP(FactLedger[CashDate], DimDate[Date]),
+			        REMOVEFILTERS(DimDate), FactLedger[CashDate] <= periodEnd))
+		formatString: "R$" #,0
+		displayFolder: Cash
+		lineageTag: 47a83dba-9064-5843-99ca-598678d05c31
+
+	measure 'Projected Cash Balance' =
+			VAR snap = [Snapshot Date]
+			VAR periodEnd = MAX(DimDate[Date])
+			VAR booked = MAX(Parameters[OpeningCash]) + CALCULATE(SUM(FactLedger[Amount]), USERELATIONSHIP(FactLedger[CashDate], DimDate[Date]),
+			    REMOVEFILTERS(DimDate), FactLedger[CashDate] <= periodEnd)
+			VAR openBills = CALCULATE(SUM(FactBills[SignedAmount]), REMOVEFILTERS(DimDate),
+			    FactBills[Status] = "Not yet due", FactBills[DueDate] <= periodEnd)
+			RETURN IF(periodEnd < snap, BLANK(), booked + openBills)
+		formatString: "R$" #,0
+		displayFolder: Cash
+		lineageTag: 08e6d196-6a03-5737-a6a3-c1c7b85e717e
+
+	measure 'Open Receivables (by due date)' = CALCULATE(SUM(FactBills[Amount]), FactBills[Type] = "Receivable", FactBills[Status] <> "Paid")
+		formatString: "R$" #,0
+		displayFolder: AR & AP
+		lineageTag: c2dc1803-0e0c-50ce-a72f-924d05baa4f7
+
+	measure 'Open Payables (by due date)' = CALCULATE(SUM(FactBills[Amount]), FactBills[Type] = "Payable", FactBills[Status] <> "Paid")
+		formatString: "R$" #,0
+		displayFolder: AR & AP
+		lineageTag: fa03f9f6-767c-59b8-839c-7f1156f143c5
+
+	measure 'Open Receivables' = CALCULATE([Open Receivables (by due date)], REMOVEFILTERS(DimDate))
+		formatString: "R$" #,0
+		displayFolder: AR & AP
+		lineageTag: f438f67c-dde2-59d4-b7bb-8897a315a707
+
+	measure 'Open Payables' = CALCULATE([Open Payables (by due date)], REMOVEFILTERS(DimDate))
+		formatString: "R$" #,0
+		displayFolder: AR & AP
+		lineageTag: 42b81d34-269a-59fe-b1e7-edf5306b04d4
+
+	measure 'Overdue Receivables' = CALCULATE(SUM(FactBills[Amount]), FactBills[Type] = "Receivable", FactBills[Status] = "Overdue", REMOVEFILTERS(DimDate))
+		formatString: "R$" #,0
+		displayFolder: AR & AP
+		lineageTag: 447b4fcc-a1f9-52af-9082-6a7ec66f5add
+
+	measure 'Default Rate %' =
+			VAR snap = [Snapshot Date]
+			RETURN DIVIDE([Overdue Receivables],
+			    CALCULATE(SUM(FactBills[Amount]), FactBills[Type] = "Receivable", FactBills[DueDate] <= snap, REMOVEFILTERS(DimDate)))
+		formatString: 0.0%
+		displayFolder: AR & AP
+		lineageTag: 3c94fe81-7f84-51ef-becc-7b6f47a9b532
+
+	measure 'DSO (days)' = CALCULATE(AVERAGE(FactBills[DaysToPay]), FactBills[Type] = "Receivable", FactBills[Status] = "Paid")
+		formatString: 0
+		displayFolder: AR & AP
+		lineageTag: 86b571a1-f2cf-5bde-8a29-f01dc84d9ee3
+
+	measure 'DPO (days)' =
+			CALCULATE(AVERAGE(FactBills[DaysToPay]), FactBills[Type] = "Payable", FactBills[Status] = "Paid",
+			    FactBills[Category] = "Suppliers")
+		formatString: 0
+		displayFolder: AR & AP
+		lineageTag: 3e374957-ae01-5d8a-bcd6-ab930c88a202
+
+	measure 'Max Days Overdue' = CALCULATE(MAX(FactBills[DaysOverdue]), FactBills[Type] = "Receivable", FactBills[Status] = "Overdue")
+		formatString: 0
+		displayFolder: AR & AP
+		lineageTag: dbc11e0d-ed6d-5019-b055-675ecbd0e208
+
+	measure 'Receivables Due' = CALCULATE(SUM(FactBills[Amount]), FactBills[Type] = "Receivable", FactBills[Status] = "Not yet due")
+		formatString: "R$" #,0
+		displayFolder: AR & AP
+		lineageTag: f3ab13f3-3ebe-59f0-91f7-69bedd223516
+
+	measure 'Payables Due' = CALCULATE(SUM(FactBills[Amount]), FactBills[Type] = "Payable", FactBills[Status] = "Not yet due")
+		formatString: "R$" #,0
+		displayFolder: AR & AP
+		lineageTag: a0658e70-d982-5558-8c8a-096a9853e7e0
+
+	measure 'Card Sales' = SUM(FactCardSales[GrossAmount])
+		formatString: "R$" #,0
+		displayFolder: Cards
+		lineageTag: ec979f73-80a9-5e3c-b3f6-3d396f6c5ec5
+
+	measure 'Card Fees' = SUM(FactCardSales[FeeAmount])
+		formatString: "R$" #,0
+		displayFolder: Cards
+		lineageTag: c2061bdc-08b9-5ddc-8064-e2fab78583dc
+
+	measure 'Effective Fee Rate %' = DIVIDE([Card Fees], [Card Sales])
+		formatString: 0.00%
+		displayFolder: Cards
+		lineageTag: 21674a8d-dccc-55be-941c-32ae7c217cdb
+
+	measure 'Advance Cost' = SUM(FactCardSales[AdvanceCost])
+		formatString: "R$" #,0
+		displayFolder: Cards
+		lineageTag: fea4d958-1009-5f08-b742-d846c2d1c05f
+
+	measure 'Total Card Cost' = [Card Fees] + [Advance Cost]
+		formatString: "R$" #,0
+		displayFolder: Cards
+		lineageTag: 4e67b8d2-9bba-5fc6-ad55-2606fabc6577
+
+	measure '% Sales Advanced' = DIVIDE(CALCULATE([Card Sales], FactCardSales[Advanced] = "Yes"), [Card Sales])
+		formatString: 0.0%
+		displayFolder: Cards
+		lineageTag: 8f079ebc-2809-5463-9935-3f808ffb7451
+
+	measure 'Future Card Receivables' =
+			VAR snap = [Snapshot Date]
+			RETURN CALCULATE(SUM(FactLedger[Amount]), USERELATIONSHIP(FactLedger[CashDate], DimDate[Date]),
+			    FactLedger[Source] = "Card", FactLedger[CashDate] > snap)
+		formatString: "R$" #,0
+		displayFolder: Cards
+		lineageTag: 12dfc99b-3841-5836-bf3b-9987bd03d042
+
+	measure 'Future Card Receivables (total)' = CALCULATE([Future Card Receivables], REMOVEFILTERS(DimDate))
+		formatString: "R$" #,0
+		displayFolder: Cards
+		lineageTag: 2367cd67-5fab-5ea7-a0a4-8782c22e4c8d
+
+	measure 'Net Revenue LY' = CALCULATE([Net Revenue], 'Time Intelligence'[Time Calculation] = "PY")
+		formatString: "R$" #,0
+		displayFolder: KPI vs LY
+		lineageTag: 5b08bc27-d33d-5ad5-a680-2ccca8aff15c
+
+	measure 'Net Revenue vs LY' =
+			VAR c = [Net Revenue]
+			VAR p = [Net Revenue LY]
+			VAR d = DIVIDE(c - p, ABS(p))
+			RETURN IF(ISBLANK(p), "",
+			    IF(d >= 0, "▲ ", "▼ ") & FORMAT(ABS(d), "0.0%") & " vs last year")
+		displayFolder: KPI vs LY
+		lineageTag: 3bb01f81-954b-5f68-a4d8-cd3547e41f37
+
+	measure 'Net Revenue vs LY Color' = IF([Net Revenue] >= [Net Revenue LY], "#2A9D8F", "#E76F51")
+		displayFolder: KPI vs LY
+		lineageTag: fe43481f-4f6b-50c7-8c38-56cc72c59961
+
+	measure 'Gross Profit LY' = CALCULATE([Gross Profit], 'Time Intelligence'[Time Calculation] = "PY")
+		formatString: "R$" #,0
+		displayFolder: KPI vs LY
+		lineageTag: 161cce2c-1a43-566e-bbf2-2b2e7bca5418
+
+	measure 'Gross Profit vs LY' =
+			VAR c = [Gross Profit]
+			VAR p = [Gross Profit LY]
+			VAR d = DIVIDE(c - p, ABS(p))
+			RETURN IF(ISBLANK(p), "",
+			    IF(d >= 0, "▲ ", "▼ ") & FORMAT(ABS(d), "0.0%") & " vs last year")
+		displayFolder: KPI vs LY
+		lineageTag: 02c2d4f8-a054-564e-9b4b-87fe8388a486
+
+	measure 'Gross Profit vs LY Color' = IF([Gross Profit] >= [Gross Profit LY], "#2A9D8F", "#E76F51")
+		displayFolder: KPI vs LY
+		lineageTag: ce471329-ef08-5230-ab82-c4c3dce1b2fa
+
+	measure 'EBITDA LY' = CALCULATE([EBITDA], 'Time Intelligence'[Time Calculation] = "PY")
+		formatString: "R$" #,0
+		displayFolder: KPI vs LY
+		lineageTag: 07de8cdc-4593-5c4c-a5bc-572f14074a2d
+
+	measure 'EBITDA vs LY' =
+			VAR c = [EBITDA]
+			VAR p = [EBITDA LY]
+			VAR d = DIVIDE(c - p, ABS(p))
+			RETURN IF(ISBLANK(p), "",
+			    IF(d >= 0, "▲ ", "▼ ") & FORMAT(ABS(d), "0.0%") & " vs last year")
+		displayFolder: KPI vs LY
+		lineageTag: f2830ad9-3aa5-53e7-962e-849dab3e38cf
+
+	measure 'EBITDA vs LY Color' = IF([EBITDA] >= [EBITDA LY], "#2A9D8F", "#E76F51")
+		displayFolder: KPI vs LY
+		lineageTag: ac08049e-aaba-5a79-9344-95227bea2916
+
+	measure 'Net Income LY' = CALCULATE([Net Income], 'Time Intelligence'[Time Calculation] = "PY")
+		formatString: "R$" #,0
+		displayFolder: KPI vs LY
+		lineageTag: 1fc81816-28c8-5f14-8416-4677a8cfb466
+
+	measure 'Net Income vs LY' =
+			VAR c = [Net Income]
+			VAR p = [Net Income LY]
+			VAR d = DIVIDE(c - p, ABS(p))
+			RETURN IF(ISBLANK(p), "",
+			    IF(d >= 0, "▲ ", "▼ ") & FORMAT(ABS(d), "0.0%") & " vs last year")
+		displayFolder: KPI vs LY
+		lineageTag: 56f060bb-e3d4-5ac6-b96b-41174f9581bd
+
+	measure 'Net Income vs LY Color' = IF([Net Income] >= [Net Income LY], "#2A9D8F", "#E76F51")
+		displayFolder: KPI vs LY
+		lineageTag: 095103ce-0edb-54d0-bc38-9a0c7ab062fa
+
+	measure 'Net Margin % LY' = CALCULATE([Net Margin %], 'Time Intelligence'[Time Calculation] = "PY")
+		formatString: 0.0%
+		displayFolder: KPI vs LY
+		lineageTag: 0d98df10-7ce5-501c-98a9-7f98ba090c2e
+
+	measure 'Net Margin % vs LY' =
+			VAR d = ([Net Margin %] - [Net Margin % LY]) * 100
+			RETURN IF(ISBLANK([Net Margin % LY]), "",
+			    IF(d >= 0, "▲ ", "▼ ") & FORMAT(ABS(d), "0.0") & " pp vs last year")
+		displayFolder: KPI vs LY
+		lineageTag: 2f1e6ad5-e077-5dd0-86a1-1653ff56ee1e
+
+	measure 'Net Margin % vs LY Color' = IF([Net Margin %] >= [Net Margin % LY], "#2A9D8F", "#E76F51")
+		displayFolder: KPI vs LY
+		lineageTag: 4b5bdbbe-535f-5622-bac2-f522b5dc3576
+
+	measure 'Cash Balance LY' = CALCULATE([Cash Balance], 'Time Intelligence'[Time Calculation] = "PY")
+		formatString: "R$" #,0
+		displayFolder: KPI vs LY
+		lineageTag: 531916e2-869a-5d6d-a82a-dc98b267eeff
+
+	measure 'Cash Balance vs LY' =
+			VAR c = [Cash Balance]
+			VAR p = [Cash Balance LY]
+			VAR d = DIVIDE(c - p, ABS(p))
+			RETURN IF(ISBLANK(p), "",
+			    IF(d >= 0, "▲ ", "▼ ") & FORMAT(ABS(d), "0.0%") & " vs last year")
+		displayFolder: KPI vs LY
+		lineageTag: e7dae57d-0f8b-5fe6-a012-812a5706d25d
+
+	measure 'Cash Balance vs LY Color' = IF([Cash Balance] >= [Cash Balance LY], "#2A9D8F", "#E76F51")
+		displayFolder: KPI vs LY
+		lineageTag: f8b8a2ef-7985-55bb-8571-55e97c4f9fcb
+
+	measure 'P&L Row Background' = IF(SELECTEDVALUE(DimPnLLine[LineType]) = "Subtotal", "#E3EAF3", "#FFFFFF")
+		displayFolder: Formatting
+		lineageTag: 94d0473b-e1af-5e24-8481-73588beded64
+
+	measure 'Variance Color' = IF([Variance vs Budget] >= 0, "#2A9D8F", "#E76F51")
+		displayFolder: Formatting
+		lineageTag: 1edd9e2c-62e3-599a-bb61-a42f3f50e833
+
+	measure 'Waterfall Amount' = IF(SELECTEDVALUE(DimPnLLine[LineType]) = "Line", [P&L Amount])
+		formatString: #,0,;(#,0,);-
+		displayFolder: P&L
+		lineageTag: b0b63ce4-00f6-5b74-8ba5-52538cfd1893
+
+	measure 'Net Income Budget' = CALCULATE([Budget], DimAccount[Group] IN {"Gross Revenue", "Deductions", "COGS", "Personnel", "Occupancy", "Sales and Marketing", "General and Administrative", "Financial Result"})
+		formatString: "R$" #,0
+		displayFolder: Budget
+		lineageTag: 803e6c3b-7cad-5cf9-9aac-bea504b820ff
+
+	measure 'Net Revenue vs Budget %' = DIVIDE([Net Revenue] - [Net Revenue Budget], ABS([Net Revenue Budget]))
+		formatString: 0.0%
+		displayFolder: Budget
+		lineageTag: fd15d91e-1ff5-5c0a-9ed9-a0f3ce7a059e
+
+	measure 'Selected Customer' = SELECTEDVALUE(FactBills[Counterparty], "All customers")
+		displayFolder: AR & AP
+		lineageTag: f5694694-3595-5703-8492-871b04d834ca
+
+	measure 'Title Revenue' =
+			VAR best = MAXX(TOPN(1, VALUES(DimDate[MonthYear]), [Net Revenue]), DimDate[MonthYear])
+			RETURN "Net revenue " & [Net Revenue vs LY] & ", " & FORMAT(ABS([Net Revenue vs Budget %]), "0.0%") &
+			    IF([Net Revenue vs Budget %] < 0, " below", " above") & " budget · best month: " & best
+		displayFolder: Titles
+		lineageTag: 231d2394-0b31-5c55-b3ba-2de5de2214b9
+
+	measure 'Title Cash' =
+			VAR t = FILTER(ADDCOLUMNS(VALUES(DimDate[MonthYear]), "@b", [Cash Balance]), NOT ISBLANK([@b]))
+			VAR lo = MINX(t, [@b])
+			VAR loMonth = MAXX(FILTER(t, [@b] = lo), DimDate[MonthYear])
+			RETURN "Cash balance R$ " & FORMAT([Cash Balance] / 1000, "#,0") & "K" & " at the end of the period · lowest month-end: R$ " &
+			    FORMAT(lo / 1000, "#,0") & "K" & " (" & loMonth & ")"
+		displayFolder: Titles
+		lineageTag: c9a10130-fbe5-5c61-99aa-c2e4d9191349
+
+	measure 'Title Projected Cash' =
+			VAR snap = [Snapshot Date]
+			VAR yearEnd = DATE(YEAR(snap), 12, 31)
+			VAR proj = CALCULATE([Projected Cash Balance], DimDate[Date] = yearEnd)
+			VAR today = CALCULATE([Cash Balance], DimDate[Date] = snap)
+			RETURN "Cash R$ " & FORMAT(today / 1000, "#,0") & "K" & " today, projected R$ " & FORMAT(proj / 1000, "#,0") & "K" & " by Dec 31 (open bills + card receipts)"
+		displayFolder: Titles
+		lineageTag: d1890901-c795-5796-9543-49ff511f045b
+
+	measure 'Title Budget' =
+			VAR b = [Net Income Budget]
+			VAR v = DIVIDE([Net Income] - b, ABS(b))
+			RETURN "Actual vs budget (BRL thousands) · net income R$ " & FORMAT([Net Income] / 1000, "#,0") & "K" & ", " &
+			    FORMAT(ABS(v), "0.0%") & IF(v < 0, " below", " above") & " budget"
+		displayFolder: Titles
+		lineageTag: 5152cddb-99c7-55eb-b7a8-ec2ba883f199
+
+	measure 'Title Waterfall' = "R$ " & FORMAT([Gross Revenue] / 1000000, "0.0") & "M of gross revenue becomes R$ " & FORMAT([Net Income] / 1000, "#,0") & "K" & " of net income (" & FORMAT([Net Margin %], "0.0%") & " margin)"
+		displayFolder: Titles
+		lineageTag: 0d69c911-9596-5676-a6ab-0d14c5b3a33e
+
+	measure 'Title Overdue' =
+			VAR top = MAXX(TOPN(1, VALUES(FactBills[Counterparty]), [Overdue Receivables]), FactBills[Counterparty])
+			RETURN "R$ " & FORMAT([Overdue Receivables] / 1000, "#,0") & "K" & " overdue (" & FORMAT([Default Rate %], "0.0%") &
+			    " of receivables due) · largest: " & top & " · right-click a customer to drill through"
+		displayFolder: Titles
+		lineageTag: ff97ba72-ca7b-5127-82f2-4ff1ed1ae54d
+
+	measure 'Title Card Fees' =
+			VAR inst = CALCULATE([Effective Fee Rate %], FactCardSales[PaymentType] = "Credit (installments)")
+			RETURN "Fees: " & FORMAT([Effective Fee Rate %], "0.0%") & " of card sales; " & FORMAT(inst, "0.0%") & " on installments"
+		displayFolder: Titles
+		lineageTag: 8759fa40-0d34-5e2b-82e0-148f81f103de
+
+	measure 'Title Metric' =
+			VAR picked = SUMMARIZE('Metric Selector', 'Metric Selector'[Metric], 'Metric Selector'[Metric Fields])
+			RETURN "Monthly trend: " & IF(COUNTROWS(picked) = 1, MAXX(picked, 'Metric Selector'[Metric]), "pick one metric")
+		displayFolder: Titles
+		lineageTag: 40cc26e1-7f5e-56ba-a86d-6bb852485c3b
+
+	measure 'Title Customer' = "Customer detail: " & [Selected Customer]
+		displayFolder: Titles
+		lineageTag: 16adb559-9019-5391-b55f-94136f99d943
+
+	column Column
+		dataType: string
+		isHidden
+		lineageTag: e5172873-673b-5982-8f9e-79f11dbb187b
+		summarizeBy: none
+		sourceColumn: Column
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [Column = text], {})
+				in
+				    Source
+

@@ -1,0 +1,176 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "name": "6b1d9c7e88335490adf2",
+  "position": {
+    "x": 20,
+    "y": 190,
+    "z": 6000,
+    "height": 515,
+    "width": 1240,
+    "tabOrder": 6000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBills"
+                    }
+                  },
+                  "Property": "BillID"
+                }
+              },
+              "queryRef": "FactBills.BillID",
+              "nativeQueryRef": "BillID"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBills"
+                    }
+                  },
+                  "Property": "IssueDate"
+                }
+              },
+              "queryRef": "FactBills.IssueDate",
+              "nativeQueryRef": "IssueDate"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBills"
+                    }
+                  },
+                  "Property": "DueDate"
+                }
+              },
+              "queryRef": "FactBills.DueDate",
+              "nativeQueryRef": "DueDate"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBills"
+                    }
+                  },
+                  "Property": "PaymentDate"
+                }
+              },
+              "queryRef": "FactBills.PaymentDate",
+              "nativeQueryRef": "PaymentDate"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBills"
+                    }
+                  },
+                  "Property": "Amount"
+                }
+              },
+              "queryRef": "FactBills.Amount",
+              "nativeQueryRef": "Amount"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBills"
+                    }
+                  },
+                  "Property": "Status"
+                }
+              },
+              "queryRef": "FactBills.Status",
+              "nativeQueryRef": "Status"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBills"
+                    }
+                  },
+                  "Property": "DaysOverdue"
+                }
+              },
+              "queryRef": "FactBills.DaysOverdue",
+              "nativeQueryRef": "DaysOverdue"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactBills"
+                  }
+                },
+                "Property": "DueDate"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "grid": [
+        {
+          "properties": {
+            "textSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11.0D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Bills of this customer (latest due date first)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

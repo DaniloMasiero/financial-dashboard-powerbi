@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "name": "fdec351cb97655968ee1",
+  "position": {
+    "x": 436,
+    "y": 82,
+    "z": 4000,
+    "height": 96,
+    "width": 198,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Effective Fee Rate %"
+                }
+              },
+              "queryRef": "_Measures.Effective Fee Rate %",
+              "nativeQueryRef": "Effective Fee Rate %"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

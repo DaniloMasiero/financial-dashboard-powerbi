@@ -1,0 +1,4 @@
+# Power BI local files (cache and per-user settings)
+powerbi/**/.pbi/localSettings.json
+powerbi/**/.pbi/cache.abf
+__pycache__/

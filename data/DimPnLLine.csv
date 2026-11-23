@@ -1,0 +1,13 @@
+LineOrder,Line,LineType
+1,Gross Revenue,Line
+2,(-) Deductions,Line
+3,= Net Revenue,Subtotal
+4,(-) COGS,Line
+5,= Gross Profit,Subtotal
+6,(-) Personnel,Line
+7,(-) Occupancy,Line
+8,(-) Sales and Marketing,Line
+9,(-) General and Administrative,Line
+10,= EBITDA,Subtotal
+11,(+/-) Financial Result,Line
+12,= Net Income,Subtotal

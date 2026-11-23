@@ -1,0 +1,41 @@
+table DimAccount
+	lineageTag: 99c094f3-f35b-5443-9b3c-c4241cdc8ebe
+
+	column AccountID
+		dataType: int64
+		formatString: 0
+		lineageTag: 064f52d4-cf55-5b45-930d-5d1d1b56595d
+		summarizeBy: none
+		sourceColumn: AccountID
+
+	column Account
+		dataType: string
+		lineageTag: 03691672-9fb6-5bc6-8618-bfec07deb655
+		summarizeBy: none
+		sourceColumn: Account
+
+	column Group
+		dataType: string
+		lineageTag: 1f2387b2-d769-5138-9e4c-79ee12e3a798
+		summarizeBy: none
+		sourceColumn: Group
+		sortByColumn: GroupOrder
+
+	column GroupOrder
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 3b6179a9-9762-5559-b0a2-f8472dcfbfec
+		summarizeBy: none
+		sourceColumn: GroupOrder
+
+	partition DimAccount = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "DimAccount.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"AccountID", Int64.Type}, {"Account", type text}, {"Group", type text}, {"GroupOrder", Int64.Type}}, "en-US")
+				in
+				    Typed
+

@@ -1,0 +1,33 @@
+relationship 8b2b17c6-61ed-5e0e-92ba-b61ac391051e
+	fromColumn: FactLedger.AccrualDate
+	toColumn: DimDate.Date
+
+relationship b8567b70-092c-565b-adbb-e95af908273c
+	isActive: false
+	fromColumn: FactLedger.CashDate
+	toColumn: DimDate.Date
+
+relationship 3c27846c-8a41-54f1-a650-cd467d1e704d
+	fromColumn: FactLedger.AccountID
+	toColumn: DimAccount.AccountID
+
+relationship f4d58a67-bb63-56ea-af04-72d929d362b3
+	fromColumn: FactBills.DueDate
+	toColumn: DimDate.Date
+
+relationship b225954c-4d5d-5249-a952-a128f34b8ad2
+	fromColumn: FactBills.AccountID
+	toColumn: DimAccount.AccountID
+
+relationship 817aee49-66f6-5420-8823-1012c47fbfde
+	fromColumn: FactCardSales.SaleDate
+	toColumn: DimDate.Date
+
+relationship f39b5133-2df9-5d7b-b62d-66e99edb8a42
+	fromColumn: FactBudget.Month
+	toColumn: DimDate.Date
+
+relationship 50098c3f-e0aa-52d0-b779-46d7025f627d
+	fromColumn: FactBudget.AccountID
+	toColumn: DimAccount.AccountID
+

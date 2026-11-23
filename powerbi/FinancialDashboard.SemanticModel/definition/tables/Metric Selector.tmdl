@@ -1,0 +1,42 @@
+table 'Metric Selector'
+	lineageTag: 2370b1c7-5114-5058-b0a9-b01e6f075a45
+
+	column Metric
+		lineageTag: 4eb9e3eb-a337-5906-8139-cb3f4c1fbeb8
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Metric Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Metric Fields'
+
+	column 'Metric Fields'
+		isHidden
+		lineageTag: bff09e75-2535-5e98-9e40-b1266917bc83
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Metric Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+	column 'Metric Order'
+		isHidden
+		lineageTag: a275692f-590d-5d4f-9960-832a946f2be5
+		summarizeBy: none
+		sourceColumn: [Value3]
+
+	partition 'Metric Selector' = calculated
+		mode: import
+		source =
+				{
+				    ("Net Revenue", NAMEOF('_Measures'[Net Revenue]), 0),
+				    ("Gross Profit", NAMEOF('_Measures'[Gross Profit]), 1),
+				    ("EBITDA", NAMEOF('_Measures'[EBITDA]), 2),
+				    ("Net Income", NAMEOF('_Measures'[Net Income]), 3),
+				    ("Net Margin %", NAMEOF('_Measures'[Net Margin %]), 4)
+				}
+

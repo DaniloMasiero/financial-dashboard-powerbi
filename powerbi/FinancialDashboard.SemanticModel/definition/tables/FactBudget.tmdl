@@ -1,0 +1,37 @@
+table FactBudget
+	lineageTag: acf8a52c-d057-58d5-ac13-1a3da835ad2f
+
+	column Month
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: 90c82eb9-75ba-54f1-85f6-c4a93a2200db
+		summarizeBy: none
+		sourceColumn: Month
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column AccountID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f55a388b-0fb4-5470-bbbe-f0e5744385b5
+		summarizeBy: none
+		sourceColumn: AccountID
+
+	column Amount
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 15da2c36-ae29-5243-9183-ed0c6883fac3
+		summarizeBy: sum
+		sourceColumn: Amount
+
+	partition FactBudget = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "FactBudget.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"Month", type date}, {"AccountID", Int64.Type}, {"Amount", type number}}, "en-US")
+				in
+				    Typed
+

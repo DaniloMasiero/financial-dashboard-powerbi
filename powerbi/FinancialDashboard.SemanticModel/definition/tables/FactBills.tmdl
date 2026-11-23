@@ -1,0 +1,123 @@
+table FactBills
+	lineageTag: a2e8bff2-a4aa-5a65-8ee5-76f7f1ac8a80
+
+	column BillID
+		dataType: int64
+		formatString: 0
+		lineageTag: 0408afa8-680b-594c-80e3-3d078e654958
+		summarizeBy: none
+		sourceColumn: BillID
+
+	column Type
+		dataType: string
+		lineageTag: e0f60575-872a-5c25-bb5c-3624cdfafc6f
+		summarizeBy: none
+		sourceColumn: Type
+
+	column Counterparty
+		dataType: string
+		lineageTag: 5fb462cd-4bd1-56ce-b41f-4fad5d8f0a51
+		summarizeBy: none
+		sourceColumn: Counterparty
+
+	column Category
+		dataType: string
+		lineageTag: 326a0808-5692-51e4-8e06-5c58bbcc92cd
+		summarizeBy: none
+		sourceColumn: Category
+
+	column AccountID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: cbfbd191-1f2e-51fe-820d-2ee803bd61ff
+		summarizeBy: none
+		sourceColumn: AccountID
+
+	column IssueDate
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: a5474ee3-b4c8-5f5a-a1b5-3ff87bedf90c
+		summarizeBy: none
+		sourceColumn: IssueDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DueDate
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: d45a51be-e2a9-5884-873e-21a3b331fd6d
+		summarizeBy: none
+		sourceColumn: DueDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PaymentDate
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: c39fad8c-f87d-5111-9475-55f876bac932
+		summarizeBy: none
+		sourceColumn: PaymentDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Amount
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 787fceff-9137-53a7-b9cc-b2a171baee33
+		summarizeBy: sum
+		sourceColumn: Amount
+
+	column Status
+		dataType: string
+		lineageTag: d6d04380-18d5-5376-847b-53a22bb61400
+		summarizeBy: none
+		sourceColumn: Status
+
+	column AgingBucket
+		dataType: string
+		lineageTag: 9d35fbb2-eb6f-54f4-873d-9358d477a55a
+		summarizeBy: none
+		sourceColumn: AgingBucket
+		sortByColumn: AgingOrder
+
+	column AgingOrder
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 1fead262-c579-5555-ace0-0276fb19479c
+		summarizeBy: none
+		sourceColumn: AgingOrder
+
+	column DaysOverdue
+		dataType: int64
+		formatString: 0
+		lineageTag: 4ffc0308-eb80-5acb-a21a-b15000111344
+		summarizeBy: none
+		sourceColumn: DaysOverdue
+
+	column DaysToPay
+		dataType: double
+		formatString: #,0.00
+		lineageTag: fd570742-fe93-54ed-8199-4009ce574607
+		summarizeBy: sum
+		sourceColumn: DaysToPay
+
+	column SignedAmount
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: b4c0ad9f-aaec-5664-bb06-9f4cb003fc1d
+		summarizeBy: sum
+		sourceColumn: SignedAmount
+
+	partition FactBills = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "FactBills.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"BillID", Int64.Type}, {"Type", type text}, {"Counterparty", type text}, {"Category", type text}, {"AccountID", Int64.Type}, {"IssueDate", type date}, {"DueDate", type date}, {"PaymentDate", type date}, {"Amount", type number}, {"Status", type text}, {"AgingBucket", type text}, {"AgingOrder", Int64.Type}, {"DaysOverdue", Int64.Type}, {"DaysToPay", type number}, {"SignedAmount", type number}}, "en-US")
+				in
+				    Typed
+

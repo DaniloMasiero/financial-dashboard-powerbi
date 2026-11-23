@@ -1,0 +1,106 @@
+table FactCardSales
+	lineageTag: c401bb7b-9503-5c0b-a813-5bf5af07dd1f
+
+	column SaleDate
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: 92013e91-e19d-55c9-b789-4b145b752a7a
+		summarizeBy: none
+		sourceColumn: SaleDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Channel
+		dataType: string
+		lineageTag: b0cc5188-7a93-51eb-a747-8854e5b0e3f6
+		summarizeBy: none
+		sourceColumn: Channel
+
+	column PaymentType
+		dataType: string
+		lineageTag: e17a9d77-d9ed-5256-a8e8-437d91fd5549
+		summarizeBy: none
+		sourceColumn: PaymentType
+
+	column CardBrand
+		dataType: string
+		lineageTag: c92397a2-034d-55e4-878a-494471308e2f
+		summarizeBy: none
+		sourceColumn: CardBrand
+
+	column Installments
+		dataType: int64
+		formatString: 0
+		lineageTag: 7da139eb-df4a-5453-8319-e5cbc052de9b
+		summarizeBy: none
+		sourceColumn: Installments
+
+	column GrossAmount
+		dataType: double
+		formatString: #,0.00
+		lineageTag: cde00058-cb1b-51e5-b7fc-c9ec8e52b92a
+		summarizeBy: sum
+		sourceColumn: GrossAmount
+
+	column FeeRate
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 2044664d-41bb-52a7-817c-da30d6904d6f
+		summarizeBy: sum
+		sourceColumn: FeeRate
+
+	column FeeAmount
+		dataType: double
+		formatString: #,0.00
+		lineageTag: ba6bdaef-2efd-570f-bd1f-e96acc8fa332
+		summarizeBy: sum
+		sourceColumn: FeeAmount
+
+	column Advanced
+		dataType: string
+		lineageTag: 92f3af2d-2691-56a6-88f8-88ef477a12d7
+		summarizeBy: none
+		sourceColumn: Advanced
+
+	column AdvanceCost
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 758515a6-7e6b-5111-9f41-d3d591a8c388
+		summarizeBy: sum
+		sourceColumn: AdvanceCost
+
+	column NetAmount
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 95977196-024f-5d20-a7a0-f3f651256625
+		summarizeBy: sum
+		sourceColumn: NetAmount
+
+	column FirstSettlement
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: eaa9278c-0ff9-5624-bc55-852c995b6a41
+		summarizeBy: none
+		sourceColumn: FirstSettlement
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column LastSettlement
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: 4f4a5d66-2177-5fb5-a3ed-f27e4ad2e23b
+		summarizeBy: none
+		sourceColumn: LastSettlement
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition FactCardSales = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "FactCardSales.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"SaleDate", type date}, {"Channel", type text}, {"PaymentType", type text}, {"CardBrand", type text}, {"Installments", Int64.Type}, {"GrossAmount", type number}, {"FeeRate", type number}, {"FeeAmount", type number}, {"Advanced", type text}, {"AdvanceCost", type number}, {"NetAmount", type number}, {"FirstSettlement", type date}, {"LastSettlement", type date}}, "en-US")
+				in
+				    Typed
+

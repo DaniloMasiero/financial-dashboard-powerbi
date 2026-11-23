@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "name": "e95ef7d264a5569db8cf",
+  "position": {
+    "x": 956,
+    "y": 82,
+    "z": 5000,
+    "height": 96,
+    "width": 302,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "DSO (days)"
+                }
+              },
+              "queryRef": "_Measures.DSO (days)",
+              "nativeQueryRef": "DSO (days)"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

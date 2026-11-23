@@ -1,0 +1,48 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "name": "0cc373e14f3152cda63c",
+  "position": {
+    "x": 14,
+    "y": 4,
+    "z": 0,
+    "height": 74,
+    "width": 900
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Income Statement (P&L)",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "18pt",
+                      "color": "#1F3A5F"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Accrual basis · Aurora Home Decor (fictitious company, Brazil) · Jan 2025 to Oct 2026 · amounts in BRL · portfolio project",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#6B7785"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

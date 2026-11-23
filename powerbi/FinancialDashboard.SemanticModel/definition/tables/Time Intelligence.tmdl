@@ -1,0 +1,38 @@
+table 'Time Intelligence'
+	lineageTag: c5fdfcbe-d7e3-5466-9bac-d4e40f80f1b9
+
+	calculationGroup
+
+		calculationItem Current = SELECTEDMEASURE()
+
+		calculationItem PY =
+				CALCULATE(SELECTEDMEASURE(),
+				    SAMEPERIODLASTYEAR(FILTER(VALUES(DimDate[Date]), DimDate[Date] <= MAX(Parameters[SnapshotDate]))))
+
+		calculationItem YoY =
+				SELECTEDMEASURE() - CALCULATE(SELECTEDMEASURE(),
+				    SAMEPERIODLASTYEAR(FILTER(VALUES(DimDate[Date]), DimDate[Date] <= MAX(Parameters[SnapshotDate]))))
+
+		calculationItem 'YoY %' =
+				VAR py = CALCULATE(SELECTEDMEASURE(),
+				    SAMEPERIODLASTYEAR(FILTER(VALUES(DimDate[Date]), DimDate[Date] <= MAX(Parameters[SnapshotDate]))))
+				RETURN DIVIDE(SELECTEDMEASURE() - py, ABS(py))
+
+			formatStringDefinition = "0.0%"
+
+		calculationItem YTD = CALCULATE(SELECTEDMEASURE(), DATESYTD(DimDate[Date]))
+
+	column 'Time Calculation'
+		dataType: string
+		lineageTag: 6ea1c888-c2d7-5d0a-b734-4fed5c60a5c0
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+	column Ordinal
+		dataType: int64
+		isHidden
+		lineageTag: 822120c5-a3bf-578a-8b8c-8d4f97094c35
+		summarizeBy: sum
+		sourceColumn: Ordinal
+

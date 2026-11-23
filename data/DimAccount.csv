@@ -1,0 +1,24 @@
+AccountID,Account,Group,GroupOrder
+101,Store Sales,Gross Revenue,1
+102,E-commerce Sales,Gross Revenue,1
+103,B2B Sales (Architects and Partners),Gross Revenue,1
+201,Sales Taxes (Simples Nacional),Deductions,2
+202,Returns,Deductions,2
+301,Cost of Goods Sold,COGS,3
+401,Salaries and Payroll Taxes,Personnel,4
+402,Owners' Compensation,Personnel,4
+403,Benefits,Personnel,4
+501,Rent,Occupancy,5
+502,Building Fees and Property Tax,Occupancy,5
+503,Electricity,Occupancy,5
+601,Digital Marketing,Sales and Marketing,6
+602,E-commerce Shipping,Sales and Marketing,6
+603,Packaging,Sales and Marketing,6
+701,Accounting Services,General and Administrative,7
+702,Software and Internet,General and Administrative,7
+703,Maintenance,General and Administrative,7
+801,Card Processing Fees,Financial Result,8
+802,Receivables Advance Cost,Financial Result,8
+803,Bank Fees,Financial Result,8
+804,Interest Income,Financial Result,8
+901,Profit Distribution,Equity Movements,9

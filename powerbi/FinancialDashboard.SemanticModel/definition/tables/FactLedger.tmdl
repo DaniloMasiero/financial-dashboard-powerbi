@@ -1,0 +1,58 @@
+table FactLedger
+	lineageTag: da1619b7-a795-55e6-9023-a8d57d6102fa
+
+	column AccrualDate
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: 4e6fecb4-b521-5803-a9c8-9aab7bd070e4
+		summarizeBy: none
+		sourceColumn: AccrualDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CashDate
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: b411f893-efcf-5a18-9e63-f0285c487d4b
+		summarizeBy: none
+		sourceColumn: CashDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column AccountID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 60a76ccb-418c-5c93-93e8-aab6725eedeb
+		summarizeBy: none
+		sourceColumn: AccountID
+
+	column Amount
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 05a5da39-7f04-523d-bff9-f645cbdd64f5
+		summarizeBy: sum
+		sourceColumn: Amount
+
+	column Description
+		dataType: string
+		lineageTag: 91991eae-e4c7-5893-9444-b37209d5534d
+		summarizeBy: none
+		sourceColumn: Description
+
+	column Source
+		dataType: string
+		lineageTag: d410dfae-1676-509d-a7a0-908b2d8eba20
+		summarizeBy: none
+		sourceColumn: Source
+
+	partition FactLedger = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "FactLedger.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"AccrualDate", type date}, {"CashDate", type date}, {"AccountID", Int64.Type}, {"Amount", type number}, {"Description", type text}, {"Source", type text}}, "en-US")
+				in
+				    Typed
+
